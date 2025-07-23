@@ -24,7 +24,9 @@
   <div id="fields"></div>
 
   <h3>Updated JSON</h3>
+  <button onclick="copyJSON()">Copy JSON</button>
   <pre id="outputJSON"></pre>
+  
 
   <script>
     let jsonArray = [];
@@ -97,6 +99,18 @@ function renderFields() {
       if (value === 'false') return false;
       return value;
     }
+
+
+    function copyJSON() {
+    const pre = document.getElementById("outputJSON");
+    const text = pre.innerText;
+
+    navigator.clipboard.writeText(text).then(() => {
+      alert("Copied to clipboard!");
+    }).catch(err => {
+      console.error("Failed to copy:", err);
+    });
+  }
   </script>
 
 </body>
