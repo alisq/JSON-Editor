@@ -14,7 +14,7 @@
 <body>
 
   <h2>Paste JSON Array</h2>
-  <textarea id="jsonInput" rows="6">[{"name":"Alice","age":30},{"name":"Bob","age":25}]</textarea>
+  <textarea id="jsonInput" rows="6"></textarea>
 
   <button onclick="parseJSON()">Load JSON</button>
 
@@ -47,7 +47,8 @@
       jsonArray.forEach((item, index) => {
         const option = document.createElement('option');
         option.value = index;
-        option.textContent = `Item ${index + 1}`;
+        {item.title ? tc = 'Item ' + (index + 1) +': '+item.title : tc = 'Item ' + (index + 1)}
+        option.textContent = tc;
         select.appendChild(option);
       });
     }
