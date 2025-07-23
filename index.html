@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>JSON Editor</title>
+  <style>
+    body { font-family: sans-serif; padding: 1rem; }
+    textarea, input { width: 100%; margin-bottom: 1rem; }
+    label { display: block; margin-top: 0.5rem; }
+    #fields input { margin-bottom: 0.5rem; }
+    pre { background: #f0f0f0; padding: 1rem; white-space: pre-wrap; }
+  </style>
+</head>
+<body>
+
+  <h2>Paste JSON Array</h2>
+  <textarea id="jsonInput" rows="6">[{"name":"Alice","age":30},{"name":"Bob","age":25}]</textarea>
+
+  <button onclick="parseJSON()">Load JSON</button>
+
+  <h3>Select an Item</h3>
+  <select id="itemSelect" onchange="renderFields()"></select>
+
+  <div id="fields"></div>
+
+  <h3>Updated JSON</h3>
+  <pre id="outputJSON"></pre>
+
+  <script>
+    let jsonArray = [];
+
+    function parseJSON() {
+      try {
+        const input = document.getElementById('jsonInput').value;
+        jsonArray = JSON.parse(input);
+        populateDropdown();
+        renderFields();
+        updateOutput();
+      } catch (err) {
+        alert('Invalid JSON');
+      }
+    }
+
+    function populateDropdown() {
+      const select = document.getElementById('itemSelect');
+      select.innerHTML = '';
+      jsonArray.forEach((item, index) => {
+        const option = document.createElement('option');
+        option.value = index;
+        option.textContent = `Item ${index + 1}`;
+        select.appendChild(option);
+      });
+    }
+
+function renderFields() {
+  const index = document.getElementById('itemSelect').value;
+  const item = jsonArray[index];
+  const fieldsDiv = document.getElementById('fields');
+  fieldsDiv.innerHTML = '';
+
+  for (let key in item) {
+    const label = document.createElement('label');
+    label.textContent = key;
+
+    const value = item[key];
+    let input;
+
+    if (typeof value === 'string' && value.length > 300) {
+      input = document.createElement('textarea');
+      input.rows = 5;
+    } else {
+      input = document.createElement('input');
+    }
+
+    input.value = value;
+    input.dataset.key = key;
+
+    input.oninput = (e) => {
+      jsonArray[index][key] = tryParseValue(e.target.value);
+      updateOutput();
+    };
+
+    fieldsDiv.appendChild(label);
+    fieldsDiv.appendChild(input);
+  }
+}
+
+
+    function updateOutput() {
+      document.getElementById('outputJSON').textContent = JSON.stringify(jsonArray, null, 2);
+    }
+
+    function tryParseValue(value) {
+      if (!isNaN(value)) return Number(value);
+      if (value === 'true') return true;
+      if (value === 'false') return false;
+      return value;
+    }
+  </script>
+
+</body>
+</html>
